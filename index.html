@@ -2,130 +2,59 @@
 <html lang="ar">
 <head>
 <meta charset="UTF-8">
+<title>السيرة الذاتية</title>
 
-<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&display=swap" rel="stylesheet">
 
 <style>
-
 body{
 margin:0;
 font-family:'Cairo',sans-serif;
 direction:rtl;
-background:linear-gradient(135deg,#0f2027,#203a43,#2c5364);
-color:white;
+background: linear-gradient(135deg,#0f2027,#203a43,#2c5364);
+color:#fff;
 }
 
-/* HEADER */
+.container{
+max-width:900px;
+margin:40px auto;
+background:#ffffff10;
+backdrop-filter: blur(10px);
+border-radius:20px;
+padding:20px;
+box-shadow:0 10px 30px rgba(0,0,0,0.4);
+}
+
 .header{
 text-align:center;
-padding:40px;
-font-size:30px;
-font-weight:900;
+margin-bottom:30px;
 }
 
-/* GRID */
-.grid{
-display:grid;
-grid-template-columns:repeat(auto-fit,minmax(320px,1fr));
-gap:25px;
-padding:30px;
+.header h1{
+margin:0;
+font-size:28px;
 }
 
-/* CARD */
-.card{
-background:rgba(255,255,255,0.08);
-backdrop-filter:blur(15px);
-border-radius:20px;
-padding:25px;
-box-shadow:0 10px 40px rgba(0,0,0,0.4);
-transition:0.4s;
-}
-
-.card:hover{
-transform:translateY(-10px);
-}
-
-/* NAME */
-.name{
-font-size:22px;
-font-weight:800;
-margin-bottom:10px;
-}
-
-/* INFO */
-.info{
-font-size:14px;
-margin:6px 0;
-opacity:0.9;
-}
-
-/* BUTTON */
-.btn{
-margin-top:15px;
-padding:12px;
-border:none;
-border-radius:10px;
-background:#00c6ff;
-color:white;
-font-weight:800;
-cursor:pointer;
-width:100%;
-}
-
-/* POPUP */
-.popup{
-position:fixed;
-top:0;
-left:0;
-width:100%;
-height:100%;
-background:rgba(0,0,0,0.9);
-display:none;
-justify-content:center;
-align-items:center;
-}
-
-.popup-box{
-width:95%;
-max-width:900px;
-height:90%;
-background:white;
-border-radius:20px;
-overflow:auto;
-color:black;
-padding:20px;
-}
-
-/* SECTIONS */
 .section{
-margin-bottom:20px;
+margin-bottom:25px;
 padding:15px;
-background:#f3f7fb;
-border-radius:12px;
-}
-
-.title{
-font-weight:800;
-color:#2a5298;
-margin-bottom:10px;
-}
-
-.skill{
-display:inline-block;
-background:#2a5298;
-color:white;
-padding:5px 10px;
+background:#ffffff08;
 border-radius:15px;
-margin:3px;
+transition:0.3s;
 }
 
-.close{
-position:absolute;
-top:20px;
-left:20px;
-color:white;
-cursor:pointer;
-font-size:22px;
+.section:hover{
+transform:scale(1.02);
+background:#ffffff15;
+}
+
+.section h2{
+margin-bottom:10px;
+color:#00d4ff;
+}
+
+.item{
+margin:5px 0;
 }
 
 </style>
@@ -133,74 +62,70 @@ font-size:22px;
 
 <body>
 
-<div class="header">📄 منصة عرض المترشحين</div>
+<div class="container">
 
-<div class="grid" id="container"></div>
+<div class="header">
+<h1 id="name">...</h1>
+</div>
 
-<div class="popup" id="popup">
-<div class="close" onclick="closeCV()">❌</div>
-<div class="popup-box" id="cv"></div>
+<div class="section">
+<h2>📌 المعلومات الشخصية</h2>
+<div class="item" id="birth"></div>
+<div class="item" id="city"></div>
+<div class="item" id="gender"></div>
+<div class="item" id="status"></div>
+<div class="item" id="nationality"></div>
+</div>
+
+<div class="section">
+<h2>📞 معلومات الاتصال</h2>
+<div class="item" id="phone"></div>
+<div class="item" id="email"></div>
+<div class="item" id="address"></div>
+</div>
+
+<div class="section">
+<h2>🎖 الخدمة الوطنية</h2>
+<div class="item" id="service"></div>
+</div>
+
 </div>
 
 <script>
 
-fetch("https://api.sheetbest.com/sheets/18830000-9db4-4925-bd70-d66fd4544eae")
-.then(res=>res.json())
-.then(data=>{
+// 🔴 ضع رابط Google Sheet JSON هنا
+const url = "https://api.sheetbest.com/sheets/18830000-9db4-4925-bd70-d66fd4544eae";
 
-let container=document.getElementById("container");
+fetch(url)
+.then(res => res.json())
+.then(data => {
 
-data.forEach(user=>{
+let user = data[data.length - 1]; // آخر مترشح
 
-let card=document.createElement("div");
-card.className="card";
+function show(id, label, value){
+document.getElementById(id).innerText =
+value && value !== "undefined" ? label + ": " + value : "";
+}
 
-card.innerHTML=`
-<div class="name">${user["الإسم الكامل"] || "بدون اسم"}</div>
+// ⚠️ عدل الأسماء حسب الشيت
+show("name","الاسم", user["الاسم الكامل"]);
+show("birth","تاريخ الميلاد", user["تاريخ الميلاد"]);
+show("city","مكان الميلاد", user["مكان الميلاد"]);
+show("gender","الجنس", user["الجنس"]);
+show("status","الحالة العائلية", user["الحالة العائلية"]);
+show("nationality","الجنسية", user["الجنسية"]);
 
-<div class="info">📍 ${user["مكان الإقامة"] || "-"}</div>
-<div class="info">🎓 ${user["المستوى الدراسي"] || "-"}</div>
-<div class="info">💼 ${user["سنوات الخبرة"] || "-"}</div>
+show("phone","الهاتف", user["رقم الهاتف"]);
+show("email","البريد", user["البريد الإلكتروني"]);
+show("address","العنوان", user["العنوان الكامل"]);
 
-<button class="btn" onclick='openCV(${JSON.stringify(user)})'>
-عرض السيرة الذاتية
-</button>
-`;
+show("service","الخدمة الوطنية", user["الوضعية تجاه الخدمة الوطنية"]);
 
-container.appendChild(card);
+})
 
+.catch(err=>{
+console.log(err);
 });
-
-});
-
-function openCV(user){
-
-let html = "";
-
-/* عرض كل البيانات تلقائياً */
-for(let key in user){
-
-if(user[key] && user[key] !== ""){
-
-html += `
-<div class="section">
-<div class="title">${key}</div>
-<div>${user[key]}</div>
-</div>
-`;
-
-}
-
-}
-
-document.getElementById("cv").innerHTML = html;
-
-document.getElementById("popup").style.display="flex";
-}
-
-function closeCV(){
-document.getElementById("popup").style.display="none";
-}
 
 </script>
 
