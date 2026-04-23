@@ -2,7 +2,6 @@
 <html lang="ar">
 <head>
 <meta charset="UTF-8">
-<title>لوحة المترشحين</title>
 
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&display=swap" rel="stylesheet">
 
@@ -12,53 +11,24 @@ body{
 margin:0;
 font-family:'Cairo',sans-serif;
 direction:rtl;
-
-background:
-linear-gradient(rgba(10,20,40,0.9),rgba(10,20,40,0.95)),
-url('https://images.unsplash.com/photo-1521737604893-d14cc237f11d');
-background-size:cover;
-background-attachment:fixed;
+background:linear-gradient(135deg,#0f2027,#203a43,#2c5364);
 color:white;
 }
 
 /* HEADER */
 .header{
 text-align:center;
-padding:30px;
-}
-
-.header h1{
-font-size:40px;
+padding:40px;
+font-size:30px;
 font-weight:900;
-}
-
-/* SEARCH */
-.search-box{
-display:flex;
-justify-content:center;
-gap:10px;
-margin-bottom:20px;
-}
-
-.search-box input{
-padding:12px;
-border-radius:10px;
-border:none;
-width:250px;
-}
-
-.search-box select{
-padding:12px;
-border-radius:10px;
-border:none;
 }
 
 /* GRID */
 .grid{
 display:grid;
-grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
-gap:20px;
-padding:20px;
+grid-template-columns:repeat(auto-fit,minmax(320px,1fr));
+gap:25px;
+padding:30px;
 }
 
 /* CARD */
@@ -66,48 +36,39 @@ padding:20px;
 background:rgba(255,255,255,0.08);
 backdrop-filter:blur(15px);
 border-radius:20px;
-padding:20px;
-box-shadow:0 10px 40px rgba(0,0,0,0.5);
-transition:0.3s;
+padding:25px;
+box-shadow:0 10px 40px rgba(0,0,0,0.4);
+transition:0.4s;
 }
 
 .card:hover{
 transform:translateY(-10px);
 }
 
-.avatar{
-width:70px;
-height:70px;
-border-radius:50%;
-background:linear-gradient(135deg,#00c6ff,#0072ff);
-display:flex;
-align-items:center;
-justify-content:center;
-font-size:28px;
-font-weight:bold;
+/* NAME */
+.name{
+font-size:22px;
+font-weight:800;
 margin-bottom:10px;
 }
 
-.name{
-font-size:20px;
-font-weight:800;
-}
-
+/* INFO */
 .info{
-font-size:13px;
-margin:5px 0;
+font-size:14px;
+margin:6px 0;
 opacity:0.9;
 }
 
+/* BUTTON */
 .btn{
-margin-top:10px;
-padding:10px;
+margin-top:15px;
+padding:12px;
 border:none;
 border-radius:10px;
-background:linear-gradient(135deg,#00c6ff,#0072ff);
+background:#00c6ff;
 color:white;
+font-weight:800;
 cursor:pointer;
-font-weight:bold;
 width:100%;
 }
 
@@ -125,46 +86,46 @@ align-items:center;
 }
 
 .popup-box{
-width:90%;
-max-width:700px;
+width:95%;
+max-width:900px;
 height:90%;
-overflow:auto;
 background:white;
-color:black;
 border-radius:20px;
+overflow:auto;
+color:black;
 padding:20px;
+}
+
+/* SECTIONS */
+.section{
+margin-bottom:20px;
+padding:15px;
+background:#f3f7fb;
+border-radius:12px;
+}
+
+.title{
+font-weight:800;
+color:#2a5298;
+margin-bottom:10px;
+}
+
+.skill{
+display:inline-block;
+background:#2a5298;
+color:white;
+padding:5px 10px;
+border-radius:15px;
+margin:3px;
 }
 
 .close{
 position:absolute;
 top:20px;
 left:20px;
-font-size:20px;
-cursor:pointer;
-}
-
-/* SECTION */
-.section{
-background:#f1f5f9;
-padding:15px;
-border-radius:10px;
-margin-bottom:15px;
-}
-
-.section-title{
-font-weight:800;
-color:#0072ff;
-margin-bottom:10px;
-}
-
-.skill{
-display:inline-block;
-background:#0072ff;
 color:white;
-padding:5px 10px;
-border-radius:10px;
-margin:3px;
-font-size:12px;
+cursor:pointer;
+font-size:22px;
 }
 
 </style>
@@ -172,54 +133,31 @@ font-size:12px;
 
 <body>
 
-<div class="header">
-<h1>📄 لوحة المترشحين</h1>
-</div>
-
-<div class="search-box">
-<input type="text" id="search" placeholder="ابحث بالاسم...">
-<select id="filter">
-<option value="">كل المدن</option>
-</select>
-</div>
+<div class="header">📄 منصة عرض المترشحين</div>
 
 <div class="grid" id="container"></div>
 
-<!-- POPUP -->
 <div class="popup" id="popup">
 <div class="close" onclick="closeCV()">❌</div>
-<div class="popup-box" id="cvContent"></div>
+<div class="popup-box" id="cv"></div>
 </div>
 
 <script>
 
-// 🔥 ضع هنا رابط Sheetbest الخاص بك
-const API_URL = "https://api.sheetbest.com/sheets/18830000-9db4-4925-bd70-d66fd4544eae";
-
-let allData = [];
-
-fetch(API_URL)
+fetch("https://api.sheetbest.com/sheets/18830000-9db4-4925-bd70-d66fd4544eae")
 .then(res=>res.json())
 .then(data=>{
-allData = data;
-displayData(data);
-fillFilter(data);
-});
 
-function displayData(data){
 let container=document.getElementById("container");
-container.innerHTML="";
 
 data.forEach(user=>{
-
-let initials = user["الاسم الكامل"] ? user["الاسم الكامل"].charAt(0) : "?";
 
 let card=document.createElement("div");
 card.className="card";
 
 card.innerHTML=`
-<div class="avatar">${initials}</div>
-<div class="name">${user["الاسم الكامل"] || "بدون اسم"}</div>
+<div class="name">${user["الإسم الكامل"] || "بدون اسم"}</div>
+
 <div class="info">📍 ${user["مكان الإقامة"] || "-"}</div>
 <div class="info">🎓 ${user["المستوى الدراسي"] || "-"}</div>
 <div class="info">💼 ${user["سنوات الخبرة"] || "-"}</div>
@@ -233,82 +171,29 @@ container.appendChild(card);
 
 });
 
-}
-
-// 🔍 SEARCH
-document.getElementById("search").addEventListener("input", function(){
-filterData();
 });
 
-document.getElementById("filter").addEventListener("change", function(){
-filterData();
-});
-
-function filterData(){
-let search=document.getElementById("search").value.toLowerCase();
-let city=document.getElementById("filter").value;
-
-let filtered = allData.filter(user=>{
-return (
-(user["الاسم الكامل"]||"").toLowerCase().includes(search) &&
-(city==="" || user["مكان الإقامة"]===city)
-);
-});
-
-displayData(filtered);
-}
-
-// 🎯 FILTER OPTIONS
-function fillFilter(data){
-let select=document.getElementById("filter");
-
-let cities=[...new Set(data.map(u=>u["مكان الإقامة"]))];
-
-cities.forEach(c=>{
-let option=document.createElement("option");
-option.value=c;
-option.textContent=c;
-select.appendChild(option);
-});
-}
-
-// 📄 OPEN CV
 function openCV(user){
 
-let skills=(user["المهارات"]||"").split(",");
+let html = "";
 
-document.getElementById("cvContent").innerHTML=`
+/* عرض كل البيانات تلقائياً */
+for(let key in user){
 
-<h2>${user["الاسم الكامل"]}</h2>
+if(user[key] && user[key] !== ""){
 
+html += `
 <div class="section">
-<div class="section-title">📌 المعلومات الشخصية</div>
-<p>📞 ${user["رقم الهاتف"]}</p>
-<p>📧 ${user["البريد الإلكتروني"]}</p>
-<p>📍 ${user["مكان الإقامة"]}</p>
+<div class="title">${key}</div>
+<div>${user[key]}</div>
 </div>
-
-<div class="section">
-<div class="section-title">🎓 التعليم</div>
-<p>${user["المستوى الدراسي"]} - ${user["التخصص"]}</p>
-</div>
-
-<div class="section">
-<div class="section-title">💼 الخبرة</div>
-<p>${user["سنوات الخبرة"]}</p>
-</div>
-
-<div class="section">
-<div class="section-title">⚡ المهارات</div>
-${skills.map(s=>`<span class="skill">${s}</span>`).join("")}
-</div>
-
-${user["السيرة الذاتية"] ? `
-<a href="${user["السيرة الذاتية"]}" target="_blank">
-📄 تحميل السيرة الذاتية
-</a>` : ""}
-
 `;
+
+}
+
+}
+
+document.getElementById("cv").innerHTML = html;
 
 document.getElementById("popup").style.display="flex";
 }
